@@ -1,0 +1,246 @@
+import express, { Request, Response } from 'express';
+import Fish from '../models/fish';
+
+/**
+ * @swagger
+ * /api/v1/fish:
+ *   get:
+ *     summary: List Every Fish in the Database
+ *     responses:
+ *       200:
+ *         description: A List of Fish Were Found
+ *       404:
+ *         description: No Fish Were Found
+*/
+export const getFishes = async (req : Request, res : Response) => {
+    console.log("GET FISHES CONTROLLER HIT");
+    // Use req.query Property to Check for any URL Search Filter.  Returns keys/vals After ? 
+    const filter = req.query;
+
+    // Returns all Entries Within Event Collection From MongoDB. Filter is a Possible Overload Which is Nullable
+    const fish = await Fish.find(filter);
+
+    if (!fish || fish.length === 0) {
+        return res.status(404).json({ message: 'No Fish found' });
+    }
+
+    return res.status(200).json(fish);
+}
+
+/**
+ * @swagger
+ * /api/v1/fish/{id}:
+ *   get:
+ *     summary: List an Fish by It's Id
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        schema: 
+ *          type: string
+ *          required: true
+ *          description: The Automatically Generated Id of the Fish to Update
+ *     responses:
+ *        200:
+ *          description: A Single Fish was Found
+ *        400:
+ *          description: No Fish was Found 
+ */
+export const getFish = async(req: Request, res: Response) => {
+    // Try to Fetch Selected Game by its id From URL Param
+    const fish = await Fish.findById(req.params.id);
+
+    // Error Handle
+    if (!fish) { 
+        return res.status(404).json({ message: 'Fish Not Found' }) 
+    }
+
+    // Return Selected Fish
+    return res.status(200).json(fish);
+};
+
+/**
+ * @swagger 
+ * /api/v1/fish:
+ *   post:
+ *     summary: Create a New Fish
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               sprite:
+ *                 type: string
+ *                 required: true
+ *               species:
+ *                 type: string
+ *                 required: true
+ *               description:
+ *                 type: string
+ *                 required: true
+ *               price:
+ *                 type: number
+ *                 required: true
+ *                 minLength: 0
+ *     responses:
+ *       201:
+ *         description: Fish was Created
+ *       400:
+ *         description: Invalid Request was Made
+ */
+export const createFish = async (req: Request, res: Response) => {
+    console.log("CREATE FISH CONTROLLER HIT");
+    try {
+        console.log("Request body:", req.body);
+
+        if (!req.body) {
+            return res.status(400).json({
+                Err: 'Invalid Request Body'
+            });
+        }
+
+        const fish = await Fish.create(req.body);
+
+        return res.status(201).json(fish);
+
+    } catch (error) {
+        console.error("Fish Creation Error:", error);
+
+        return res.status(400).json({
+            Err: 'Failed to Create Fish',
+            error: error
+        });
+    }
+};
+
+/**
+ * @swagger
+ * /api/v1/fish/{id}:
+ *   put:
+ *     summary: Update the Information of a Fish by its Id
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema: 
+ *           type: string
+ *           required: true
+ *           description: The Automatically Generated Id of the Fish to Update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               sprite:
+ *                 type: string
+ *                 required: true
+ *               species:
+ *                 type: string
+ *                 required: true
+ *               description:
+ *                 type: string
+ *                 required: true
+ *               price:
+ *                 type: number
+ *                 required: true
+ *                 minLength: 0
+ *     responses:
+ *       204:
+ *         description: Fish Information was Successfully Updated
+ *       400:
+ *         description: Fish was not Found
+ */
+export const updateFish = async (req: Request, res: Response) => { 
+    //Check if the Id in the Request is a Valid Id
+    if (!req.params.id) {
+        return res.status(400).json({ 'Error': 'Bad Request, Request Must Include an Id Parameter' });
+    }
+
+    await Fish.findByIdAndUpdate(req.params.id, req.body);// Find the Fish by It's Id Then Update it Based on the Request Information
+
+    return res.status(204).json({ 'Message': 'Fish Successfully Updated' });// Send a No Content Status Response
+};
+
+/**
+ * @swagger
+ * /api/v1/fish/{id}:
+ *   delete:
+ *     summary: Remove an Fish by its Id
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The Automatically Generated Id of the Fish to Delete
+ *     responses:
+ *       204:
+ *         description: Fish was Successfully Delete
+ *       400:
+ *         description: Fish was not Found
+ */
+export const deleteFish = async (req: Request, res: Response) => { 
+    //Check if the Id in the Request is a Valid Id
+    if (!req.params.id) {
+        return res.status(400).json({ 'Error': 'Bad Request, Request Must Include an Id Parameter' });
+    }
+
+    await Fish.findByIdAndDelete(req.params.id);// Find the Fish by It's Id Then Delete it
+
+    return res.status(204).json({ 'Message': 'Fish Successfully Deleted'});// Send a No Content Status Response
+};
+
+/**
+ * @swagger
+ * /api/v1/fish/{id}/funfact:
+ *   post:
+ *     summary: Add a Fun Fact to an Fish by the Fish's Id
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        schema: 
+ *          type: string
+ *          required: true
+ *          description: The Automatically Generated Id of the Fish to Update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fact: 
+ *                 type: string
+ *     responses:
+ *        200:
+ *          description: A Fun Fact was Added
+ *        400:
+ *          description: No Fish was Found / Invalid Request Body
+ */
+export const addFunFact = async (req: Request, res: Response) => {
+    try {// Try Catch to Ensure .findById Doesn't Throw an Error, When Invalid Id is Given
+        //Check if the Id in the Request is a Valid Id
+        if (!req.params.id) {
+            return res.status(400).json({ 'Error': 'Bad Request, Request Must Include an Id Parameter' });
+        }
+
+        const fish = await Fish.findById(req.params.id);// Fetch 
+
+        if (!fish) {
+            return res.status(404).json({ message: 'No Fish Found' });
+        }
+
+        // If the Request Body is Invalid (i.e: Like if name Property is Missing) 
+        if (!req.body) {
+            return res.status(400).json({ 'Error': 'Invalid Request Body' });// Send a Bad Request Response
+        }
+
+        fish.funFacts.push(req.body);
+        await fish.save();
+
+        return res.status(200).json(fish);
+    } catch (err) {
+        return res.status(400).json({ message: 'No Fish Found' });
+    }
+};
