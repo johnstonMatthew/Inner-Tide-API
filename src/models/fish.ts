@@ -9,6 +9,8 @@ interface IFish {
     species: string;
     description: string;
     price: number;
+    height: number;
+    width: number;
     funFacts: IFunFacts[];
 }
 
@@ -36,6 +38,16 @@ const FishSchema = new Schema<IFish>({
         type: Number,
         required: [true, 'Price is Required'],
         min: 0
+    },
+    height: {
+        type: Number,
+        required: [true, 'Height is Required'],
+        min: 1
+    },
+    width: {
+        type: Number,
+        required: [true, 'Width is Required'],
+        min: 1
     },
     funFacts: {
         type: [FunFactSchema],

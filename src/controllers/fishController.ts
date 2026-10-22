@@ -81,7 +81,15 @@ export const getFish = async(req: Request, res: Response) => {
  *               price:
  *                 type: number
  *                 required: true
- *                 minLength: 0
+ *                 min: 0
+ *               height:
+ *                 type: number
+ *                 required: true
+ *                 min: 1
+ *               width:
+ *                 type: number
+ *                 required: true
+ *                 min: 1
  *     responses:
  *       201:
  *         description: Fish was Created
@@ -145,6 +153,14 @@ export const createFish = async (req: Request, res: Response) => {
  *                 type: number
  *                 required: true
  *                 minLength: 0
+ *               height:
+ *                 type: number
+ *                 required: true
+ *                 min: 1
+ *               width:
+ *                 type: number
+ *                 required: true
+ *                 min: 1
  *     responses:
  *       204:
  *         description: Fish Information was Successfully Updated
