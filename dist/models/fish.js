@@ -58,6 +58,16 @@ const FishSchema = new mongoose_1.Schema({
         required: [true, 'Price is Required'],
         min: 0
     },
+    height: {
+        type: Number,
+        required: [true, 'Height is Required'],
+        min: 1
+    },
+    width: {
+        type: Number,
+        required: [true, 'Width is Required'],
+        min: 1
+    },
     funFacts: {
         type: [FunFactSchema],
         default: []

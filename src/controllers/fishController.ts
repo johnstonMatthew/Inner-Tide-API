@@ -103,7 +103,7 @@ export const createFish = async (req: Request, res: Response) => {
 
         if (!req.body) {
             return res.status(400).json({
-                Err: 'Invalid Request Body'
+                        Err: "Failed to Create Fish"
             });
         }
 
@@ -111,12 +111,13 @@ export const createFish = async (req: Request, res: Response) => {
 
         return res.status(201).json(fish);
 
-    } catch (error) {
+    } catch (error : any) {
         console.error("Fish Creation Error:", error);
 
         return res.status(400).json({
-            Err: 'Failed to Create Fish',
-            error: error
+            Err: "Failed to Create Fish",
+            Message: error.message,
+            ValidationErrors: error.errors
         });
     }
 };

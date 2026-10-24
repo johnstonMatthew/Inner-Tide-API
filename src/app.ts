@@ -4,10 +4,19 @@ import swaggerJsDoc from 'swagger-jsdoc'; //Generates the API Documentation
 import swaggerUi from 'swagger-ui-express';
 import mongoose from 'mongoose';
 
-
-
 import fishRouter from './routes/fishRoutes';
 import itemRouter from './routes/itemRoutes';
+
+let isConnected = false;
+
+export async function connectDB() {
+    if (isConnected) return;
+
+    await mongoose.connect(process.env.DB!);
+
+    isConnected = true;
+    console.log("Connected to MongoDB");
+}
 
 const app: Application = express();
 

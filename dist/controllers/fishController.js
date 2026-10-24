@@ -80,7 +80,15 @@ exports.getFish = getFish;
  *               price:
  *                 type: number
  *                 required: true
- *                 minLength: 0
+ *                 min: 0
+ *               height:
+ *                 type: number
+ *                 required: true
+ *                 min: 1
+ *               width:
+ *                 type: number
+ *                 required: true
+ *                 min: 1
  *     responses:
  *       201:
  *         description: Fish was Created
@@ -93,7 +101,7 @@ const createFish = async (req, res) => {
         console.log("Request body:", req.body);
         if (!req.body) {
             return res.status(400).json({
-                Err: 'Invalid Request Body'
+                Err: "Failed to Create Fish"
             });
         }
         const fish = await fish_1.default.create(req.body);
@@ -102,8 +110,9 @@ const createFish = async (req, res) => {
     catch (error) {
         console.error("Fish Creation Error:", error);
         return res.status(400).json({
-            Err: 'Failed to Create Fish',
-            error: error
+            Err: "Failed to Create Fish",
+            Message: error.message,
+            ValidationErrors: error.errors
         });
     }
 };
@@ -140,6 +149,14 @@ exports.createFish = createFish;
  *                 type: number
  *                 required: true
  *                 minLength: 0
+ *               height:
+ *                 type: number
+ *                 required: true
+ *                 min: 1
+ *               width:
+ *                 type: number
+ *                 required: true
+ *                 min: 1
  *     responses:
  *       204:
  *         description: Fish Information was Successfully Updated
