@@ -25,6 +25,7 @@ mongoose_1.default.connect(dbUri)
     console.error("MongoDB Connection Failed:");
     console.error(err);
 });
+console.log("After mongoose.connect");
 app.get('/test', (req, res) => {
     res.json({ message: 'This is the correct server' });
 });

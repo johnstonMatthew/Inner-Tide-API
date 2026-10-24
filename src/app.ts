@@ -27,6 +27,8 @@ mongoose.connect(dbUri)
     console.error(err);
 });
 
+console.log("After mongoose.connect");
+
 app.get('/test', (req: Request, res: Response) => {
     res.json({ message: 'This is the correct server' });
 });

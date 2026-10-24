@@ -17,15 +17,22 @@ const fish_1 = __importDefault(require("../models/fish"));
  *         description: No Fish Were Found
 */
 const getFishes = async (req, res) => {
-    console.log("GET FISHES CONTROLLER HIT");
-    // Use req.query Property to Check for any URL Search Filter.  Returns keys/vals After ? 
-    const filter = req.query;
-    // Returns all Entries Within Event Collection From MongoDB. Filter is a Possible Overload Which is Nullable
-    const fish = await fish_1.default.find(filter);
-    if (!fish || fish.length === 0) {
-        return res.status(404).json({ message: 'No Fish found' });
+    try {
+        console.log("GET FISHES CONTROLLER HIT");
+        const filter = req.query;
+        console.log("Before Fish.find");
+        const fish = await fish_1.default.find(filter);
+        console.log("After Fish.find");
+        return res.status(200).json(fish);
     }
-    return res.status(200).json(fish);
+    catch (error) {
+        console.error("GET FISHES ERROR");
+        console.error(error);
+        return res.status(500).json({
+            message: error.message,
+            stack: error.stack
+        });
+    }
 };
 exports.getFishes = getFishes;
 /**
