@@ -16,10 +16,16 @@ app.use(bodyParser.json());
 const dbUri = process.env.DB!;
 
 console.log("DB variable exists:", !!process.env.DB);
+console.log("DB Length:", process.env.DB?.length);
 
 mongoose.connect(dbUri)
-.then(() => { console.log('Connected to MongoDB') })
-.catch((err: Error) => { console.log(`Connection Failed: ${err.message}`)});
+.then(() => {
+    console.log("Connected to MongoDB");
+})
+.catch((err: Error) => {
+    console.error("MongoDB Connection Failed:");
+    console.error(err);
+});
 
 app.get('/test', (req: Request, res: Response) => {
     res.json({ message: 'This is the correct server' });
