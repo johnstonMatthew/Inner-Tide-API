@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.connectDB = connectDB;
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser")); // Accepts the JSON Body in the POST and PUT Commands
 const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc")); //Generates the API Documentation
@@ -11,19 +10,12 @@ const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const fishRoutes_1 = __importDefault(require("./routes/fishRoutes"));
 const itemRoutes_1 = __importDefault(require("./routes/itemRoutes"));
-let isConnected = false;
-async function connectDB() {
-    if (isConnected)
-        return;
-    await mongoose_1.default.connect(process.env.DB);
-    isConnected = true;
-    console.log("Connected to MongoDB");
-}
 const app = (0, express_1.default)();
 // Configuring the Application to Parse HTTP Request Bodies
 app.use(body_parser_1.default.json());
 // Setup the Database Connection
 const dbUri = process.env.DB;
+console.log("DB variable exists:", !!process.env.DB);
 mongoose_1.default.connect(dbUri)
     .then(() => { console.log('Connected to MongoDB'); })
     .catch((err) => { console.log(`Connection Failed: ${err.message}`); });

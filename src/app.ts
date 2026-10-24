@@ -7,17 +7,6 @@ import mongoose from 'mongoose';
 import fishRouter from './routes/fishRoutes';
 import itemRouter from './routes/itemRoutes';
 
-let isConnected = false;
-
-export async function connectDB() {
-    if (isConnected) return;
-
-    await mongoose.connect(process.env.DB!);
-
-    isConnected = true;
-    console.log("Connected to MongoDB");
-}
-
 const app: Application = express();
 
 // Configuring the Application to Parse HTTP Request Bodies
@@ -25,6 +14,8 @@ app.use(bodyParser.json());
 
 // Setup the Database Connection
 const dbUri = process.env.DB!;
+
+console.log("DB variable exists:", !!process.env.DB);
 
 mongoose.connect(dbUri)
 .then(() => { console.log('Connected to MongoDB') })
