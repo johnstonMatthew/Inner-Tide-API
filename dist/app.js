@@ -17,6 +17,7 @@ app.use(body_parser_1.default.json());
 const dbUri = process.env.DB;
 console.log("DB variable exists:", !!process.env.DB);
 console.log("DB Length:", process.env.DB?.length);
+console.log(process.env.DB?.substring(0, 25));
 mongoose_1.default.connect(dbUri)
     .then(() => {
     console.log("Connected to MongoDB");

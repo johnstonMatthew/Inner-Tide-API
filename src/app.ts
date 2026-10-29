@@ -17,6 +17,7 @@ const dbUri = process.env.DB!;
 
 console.log("DB variable exists:", !!process.env.DB);
 console.log("DB Length:", process.env.DB?.length);
+console.log(process.env.DB?.substring(0, 25));
 
 mongoose.connect(dbUri)
 .then(() => {
